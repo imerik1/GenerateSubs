@@ -25,7 +25,8 @@ def cropAudio(total):
 
     print('Foram encontrados ', repeticoes, ' linhas de legenda!')
 
-    corDaFonte = input("Você quer a fonte branca ou amarela?\n1- Branco\n2- Amarelo\n")
+    corDaFonte = input(
+        "Você quer a fonte branca ou amarela?\n1- Branco\n2- Amarelo\n")
 
     while i <= repeticoes:
         i = i + 1
@@ -57,13 +58,16 @@ def cropAudio(total):
                 audio_data = r.record(source)
                 text = r.recognize_google(audio_data)
                 f.write(str(i) + '\n')
-                inicio = time.strftime('%H:%M:%S', time.gmtime(segundoInicial / 1000))
-                final = time.strftime('%H:%M:%S', time.gmtime(segundoFinal / 1000))
+                inicio = time.strftime('%H:%M:%S',
+                                       time.gmtime(segundoInicial / 1000))
+                final = time.strftime('%H:%M:%S',
+                                      time.gmtime(segundoFinal / 1000))
                 f.write(inicio + ',000 --> ' + final + ',000\n')
                 if corDaFonte == '1' or corDaFonte != '2':
                     f.write(text + '\n' + '\n')
                 else:
-                    f.write('<font color="#ffff54">' + text + '</font>' + '\n' + '\n')
+                    f.write('<font color="#ffff54">' + text + '</font>' +
+                            '\n' + '\n')
                 f.close()
         except:
             os.remove('./extract/audioextract.wav')
@@ -112,11 +116,12 @@ def getLink():
     link = input('Digite o link do vídeo: ')
     try:
         yt = YouTube(link)
+        createAudio(yt.streams.get_lowest_resolution(), yt.length)
         print("Selecione onde deseja salvar a legenda e o vídeo")
         path = getPath()
-        createAudio(yt.streams.get_lowest_resolution(), yt.length)
         print("Aguarde enquanto fazemos o download do seu vídeo!")
-        yt.streams.filter(progressive=True).get_highest_resolution().download(path)
+        yt.streams.filter(
+            progressive=True).get_highest_resolution().download(path)
         shutil.move("./data/subtitle.srt", path)
         shutil.rmtree('./data')
 
