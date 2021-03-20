@@ -12,3 +12,10 @@ Cria legendas para seus vídeos no YouTube, ainda não foi testado em vídeos em
 > Inicie o installModules.bat, isto instalará as dependências necessárias.
 
 > Agora inicie o main.py e está pronto o sorvetinho.
+
+
+## Esclarecimentos
+Por favor faça fork do repositório e nos ajude com PR, não utilize o código para promover como seu.
+
+## Colaboração Inicial
+[Maithe Souza](https://www.linkedin.com/in/maithe-de-souza/)
