@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import shutil
 import time
 from tkinter import Tk
@@ -8,9 +10,10 @@ from moviepy.editor import *
 from pydub import AudioSegment
 from pytube import YouTube
 from pytube.exceptions import VideoUnavailable
-
+from google_trans_new import google_translator
 
 def cropAudio(total):
+    translator = google_translator()
     r = sr.Recognizer()
 
     segundos = 0
@@ -23,11 +26,14 @@ def cropAudio(total):
     os.mkdir('./extract')
     repeticoes = total / 5
 
-    print('Foram encontrados ', repeticoes, ' linhas de legenda!')
+    print('Foram encontrados ', repeticoes, ' linhas de legenda!\n')
 
     corDaFonte = input(
         "Você quer a fonte branca ou amarela?\n1- Branco\n2- Amarelo\n")
 
+    opt = int(input("Você quer traduzir o texto?\n1-Sim\n2-Não\n"))
+
+    print('\n')
     while i <= repeticoes:
         i = i + 1
         print('Estamos na linha ', i)
@@ -56,7 +62,12 @@ def cropAudio(total):
             with sr.AudioFile('./extract/audioextract.wav') as source:
                 f = open("./data/subtitle.srt", "a")
                 audio_data = r.record(source)
-                text = r.recognize_google(audio_data)
+
+                traducao = r.recognize_google(audio_data)
+
+                if opt == 1:
+                    traducao = translator.translate(traducao, lang_tgt='pt')
+
                 f.write(str(i) + '\n')
                 inicio = time.strftime('%H:%M:%S',
                                        time.gmtime(segundoInicial / 1000))
@@ -64,11 +75,12 @@ def cropAudio(total):
                                       time.gmtime(segundoFinal / 1000))
                 f.write(inicio + ',000 --> ' + final + ',000\n')
                 if corDaFonte == '1' or corDaFonte != '2':
-                    f.write(text + '\n' + '\n')
+                    f.write(traducao + '\n' + '\n')
                 else:
-                    f.write('<font color="#ffff54">' + text + '</font>' +
+                    f.write('<font color="#ffff54">' + traducao + '</font>' +
                             '\n' + '\n')
                 f.close()
+
         except:
             os.remove('./extract/audioextract.wav')
             s = s + 5
@@ -83,7 +95,8 @@ def cropAudio(total):
     shutil.rmtree('./extract')
     shutil.rmtree('./download')
     os.system('cls' if os.name == 'nt' else 'clear')
-    return print("Legenda criada com sucesso!")
+    print('\n')
+    return print("Legenda criada com sucesso!\n")
 
 
 def createAudio(video, segundos):
@@ -114,8 +127,10 @@ def getPath():
 
 def getLink():
     link = input('Digite o link do vídeo: ')
+    print('\n')
     try:
         yt = YouTube(link)
+        print("Vídeo encontrado: ", yt.title)
         createAudio(yt.streams.get_lowest_resolution(), yt.length)
         print("Selecione onde deseja salvar a legenda e o vídeo")
         path = getPath()
